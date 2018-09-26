@@ -10,7 +10,7 @@ start_time = time.time()
 
 if __name__ == "__main__":
 
-    VIDEO_IN = cv2.VideoCapture("sample.mp4")
+    VIDEO_IN = cv2.VideoCapture(0)
 
     frameID = 0
     while True:
@@ -21,7 +21,7 @@ if __name__ == "__main__":
             print("--- %s seconds ---" % (time.time() - start_time))
             break
 
-        yolo.getObject(frame, labelWant="", drawBox=True)
+        yolo.getObject(frame, labelWant="", drawBox=True, bold=1, textsize=0.6, bcolor=(0,0,255), tcolor=(255,255,255))
         print ("Object counts:", yolo.objCounts)
         yolo.listLabels()
         cv2.imshow("Frame", imutils.resize(frame, width=850))

@@ -70,13 +70,18 @@ class opencvYOLO():
 
 
     # Remove the bounding boxes with low confidence using non-maxima suppression
-    def postprocess(self, frame, outs, labelWant, drawBox):
+    def postprocess(self, frame, outs, labelWant, drawBox, bold, textsize, bcolor, tcolor):
         frameHeight = frame.shape[0]
         frameWidth = frame.shape[1]
  
         classIds = []
         confidences = []
         boxes = []
+        boxbold = []
+        labelsize = []
+        boldcolor = []
+        textcolor = []
+
         for out in outs:
             for detection in out:
                 scores = detection[5:]
@@ -93,6 +98,10 @@ class opencvYOLO():
                     classIds.append(classId)
                     confidences.append(float(confidence))
                     boxes.append((left, top, width, height))
+                    boxbold.append(bold)
+                    labelsize.append(textsize)
+                    boldcolor.append(bcolor)
+                    textcolor.append(tcolor)
 
         # Perform non maximum suppression to eliminate redundant overlapping boxes with
         # lower confidences.
@@ -108,16 +117,18 @@ class opencvYOLO():
             height = box[3]
 
             if(drawBox==True):
-                self.drawPred(frame, classIds[i], confidences[i], left, top, left + width, top + height)
+                print(boxbold[i], boldcolor[i], textcolor[i], labelsize[i])
+                self.drawPred(frame, classIds[i], confidences[i], boxbold[i], boldcolor[i], textcolor[i],
+                    labelsize[i], left, top, left + width, top + height)
 
         self.bbox = boxes
         self.classIds = classIds
         self.scores = confidences
 
     # Draw the predicted bounding box
-    def drawPred(self, frame, classId, conf, left, top, right, bottom):
+    def drawPred(self, frame, classId, conf, bold, boldcolor, textcolor, textsize, left, top, right, bottom):
         # Draw a bounding box.
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 3)
+        cv2.rectangle(frame, (left, top), (right, bottom), boldcolor, bold)
 
         label = '%.2f' % conf
 
@@ -129,9 +140,9 @@ class opencvYOLO():
         #Display the label at the top of the bounding box
         labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
         top = max(top, labelSize[1])
-        cv2.putText(frame, label, (left, top), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255,255,255))
+        cv2.putText(frame, label, (left, top), cv2.FONT_HERSHEY_SIMPLEX, textsize, textcolor)
 
-    def getObject(self, frame, labelWant=("car","person"), drawBox=False):
+    def getObject(self, frame, labelWant=("car","person"), drawBox=False, bold=1, textsize=0.6, bcolor=(0,0,255), tcolor=(255,255,255)):
         blob = cv2.dnn.blobFromImage(frame, 1/255, (self.inpWidth, self.inpHeight), [0,0,0], 1, crop=False)
         # Sets the input to the network
         net = self.net
@@ -139,7 +150,7 @@ class opencvYOLO():
         # Runs the forward pass to get output of the output layers
         outs = net.forward(self.getOutputsNames(net))
         # Remove the bounding boxes with low confidence
-        self.postprocess(frame, outs, labelWant, drawBox)
+        self.postprocess(frame, outs, labelWant, drawBox, bold, textsize, bcolor, tcolor)
         self.objCounts = len(self.indices)
         # Put efficiency information. The function getPerfProfile returns the 
         # overall time for inference(t) and the timings for each of the layers(in layersTimes)
