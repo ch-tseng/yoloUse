@@ -8,7 +8,7 @@ from yoloPydarknet import pydarknetYOLO
 import cv2
 import imutils
 
-yolo = pydarknetYOLO( obdata="coco.data", weights="yolov3.weights", cfg="../../darknet/cfg/yolov3.cfg")
+yolo = pydarknetYOLO( obdata="../darknet/cfg/coco.data", weights="yolov3.weights", cfg="../../darknet/cfg/yolov3.cfg")
 
 if __name__ == "__main__":
 
@@ -44,7 +44,7 @@ class pydarknetYOLO():
     def setScore(self, score=0.5):
         self.score = score
 
-    def getObject(self, frame, labelWant=("car","person"), drawBox=False):
+    def getObject(self, frame, labelWant=("car","person"), drawBox=False, bold=1, textsize=0.6, bcolor=(0,0,255), tcolor=(255,255,255)):
         net = self.net
         dark_frame = Image(frame)
         self.results = net.detect(dark_frame)
@@ -54,6 +54,11 @@ class pydarknetYOLO():
         boxes = []
         scores = []
         labels = []
+        boxbold = []
+        labelsize = []
+        boldcolor = []
+        textcolor = []
+
         for cat, score, box in self.results:
             label = cat.decode('utf-8')
 
@@ -69,9 +74,14 @@ class pydarknetYOLO():
                 boxes.append( (left, top, width, height) )
                 scores.append(score)
                 labels.append(label) 
+                boxbold.append(bold)
+                labelsize.append(textsize)
+                boldcolor.append(bcolor)
+                textcolor.append(tcolor)
 
                 if(drawBox==True):
-                    self.drawPred(frame, label, score, left, top, left+width, top+height)
+                    self.drawPred(frame, label, score,  bold, bcolor, tcolor,
+                    textsize, left, top, left+width, top+height)
 
         self.bbox = boxes
         self.scores = scores
@@ -100,9 +110,9 @@ class pydarknetYOLO():
         return (left, top, width, height, label, score)
 
     # Draw the predicted bounding box
-    def drawPred(self, frame, label, conf, left, top, right, bottom):
+    def drawPred(self, frame, label, conf, bold, boldcolor, textcolor, textsize, left, top, right, bottom):
         # Draw a bounding box.
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255))
+        cv2.rectangle(frame, (left, top), (right, bottom), boldcolor, bold)
 
         score = '%.2f' % conf
 
@@ -111,5 +121,5 @@ class pydarknetYOLO():
         #Display the label at the top of the bounding box
         labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
         top = max(top, labelSize[1])
-        cv2.putText(frame, label, (left, top), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255))
+        cv2.putText(frame, label, (left, top), cv2.FONT_HERSHEY_SIMPLEX, textsize, textcolor)
 
