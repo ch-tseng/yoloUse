@@ -44,7 +44,7 @@ class pydarknetYOLO():
     def setScore(self, score=0.5):
         self.score = score
 
-    def getObject(self, frame, labelwant=("car","person"), drawBox=False):
+    def getObject(self, frame, labelWant=("car","person"), drawBox=False):
         net = self.net
         dark_frame = Image(frame)
         self.results = net.detect(dark_frame)
@@ -65,7 +65,7 @@ class pydarknetYOLO():
             print("Label:{}, score:{}, left:{}, top:{}, right:{}, bottom:{}".format(label, 
                 score, left, top, left + width, top + height) )
 
-            if(labelwant=="" or (label in labelwant)):
+            if(labelWant=="" or (label in labelWant)):
                 boxes.append( (left, top, width, height) )
                 scores.append(score)
                 labels.append(label) 

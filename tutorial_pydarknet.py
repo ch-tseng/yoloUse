@@ -1,10 +1,10 @@
-from yoloOpencv import opencvYOLO
+from yoloPydarknet import pydarknetYOLO
 import cv2
 import imutils
 import time
 
-yolo = opencvYOLO(modeltype="yolov3", objnames="../darknet/data/coco.names",
-    weights="yolov3.weights", cfg="../darknet/cfg/yolov3.cfg")
+yolo = pydarknetYOLO(obdata="../darknet/cfg/coco.data", weights="yolov3.weights", 
+    cfg="../darknet/cfg/yolov3.cfg")
 
 start_time = time.time()
 
@@ -23,7 +23,6 @@ if __name__ == "__main__":
 
         yolo.getObject(frame, labelWant="", drawBox=True)
         print ("Object counts:", yolo.objCounts)
-        yolo.listLabels()
         cv2.imshow("Frame", imutils.resize(frame, width=850))
 
         k = cv2.waitKey(1)
