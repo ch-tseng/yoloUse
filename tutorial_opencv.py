@@ -4,13 +4,14 @@ import imutils
 import time
 
 yolo = opencvYOLO(modeltype="yolov3", objnames="../darknet/data/coco.names",
-    weights="yolov3.weights", cfg="../darknet/cfg/yolov3.cfg")
+    weights="../darknet/weights/yolov3.weights", cfg="../darknet/cfg/yolov3.cfg")
 
 start_time = time.time()
 
 if __name__ == "__main__":
 
-    VIDEO_IN = cv2.VideoCapture(0)
+    #VIDEO_IN = cv2.VideoCapture(0)
+    VIDEO_IN = cv2.VideoCapture("/media/sf_ShareFolder/traffic.mp4")
 
     frameID = 0
     while True:
@@ -23,7 +24,9 @@ if __name__ == "__main__":
 
         yolo.getObject(frame, labelWant="", drawBox=True, bold=1, textsize=0.6, bcolor=(0,0,255), tcolor=(255,255,255))
         print ("Object counts:", yolo.objCounts)
-        yolo.listLabels()
+        #yolo.listLabels()
+        print("classIds:{}, confidences:{}, labelName:{}, bbox:{}".\
+            format(len(yolo.classIds), len(yolo.scores), len(yolo.labelNames), len(yolo.bbox)) )
         cv2.imshow("Frame", imutils.resize(frame, width=850))
 
         k = cv2.waitKey(1)

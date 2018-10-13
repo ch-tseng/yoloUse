@@ -75,6 +75,7 @@ class opencvYOLO():
         frameWidth = frame.shape[1]
  
         classIds = []
+        labelName = []
         confidences = []
         boxes = []
         boxbold = []
@@ -99,6 +100,7 @@ class opencvYOLO():
                     confidences.append(float(confidence))
                     boxes.append((left, top, width, height))
                     boxbold.append(bold)
+                    labelName.append(label)
                     labelsize.append(textsize)
                     boldcolor.append(bcolor)
                     textcolor.append(tcolor)
@@ -124,6 +126,7 @@ class opencvYOLO():
         self.bbox = boxes
         self.classIds = classIds
         self.scores = confidences
+        self.labelNames = labelName
 
     # Draw the predicted bounding box
     def drawPred(self, frame, classId, conf, bold, boldcolor, textcolor, textsize, left, top, right, bottom):
