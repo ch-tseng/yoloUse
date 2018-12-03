@@ -31,7 +31,7 @@ if __name__ == "__main__":
         print ("Object counts:", yolo.objCounts)
         cv2.imshow("Frame", imutils.resize(frame, width=850))
         if(video_out!=""):
-            out.write(overlapping)
+            out.write(frame)
 
         k = cv2.waitKey(1)
         if k == 0xFF & ord("q"):
