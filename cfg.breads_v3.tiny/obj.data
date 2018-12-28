@@ -1,0 +1,5 @@
+classes= 6
+train  = cfg.breads_v3.tiny/train.txt
+valid  = cfg.breads_v3.tiny/test.txt
+names = cfg.breads_v3.tiny/obj.names
+backup = cfg.breads_v3.tiny/weights/
