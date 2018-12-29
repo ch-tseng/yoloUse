@@ -10,6 +10,9 @@ class desktop:
         self.click_bg = cv2.imread(click_bg_path)
 
     def display(self, camImg, txtStatus=None, itemList=None):
+        itemList_pos = (40, 550)
+        itemList_h = 40
+
         resized = cv2.resize(camImg, (480, 360))
         bg = self.bg
         print(bg.shape, resized.shape)
@@ -17,6 +20,24 @@ class desktop:
 
         if(txtStatus is not None):
             cv2.putText(bg, txtStatus, (290,120), cv2.FONT_HERSHEY_COMPLEX, 0.65, (0,255,0), 2)
+
+        price_total = 0
+        if(itemList is not None):
+            y = itemList_pos[0]
+            for id, item in enumerate(itemList):
+                txtIMG = cv2.imread("images/products/" + item[0] + ".jpg")
+
+                bg[y:y+txtIMG.shape[0], itemList_pos[1]:itemList_pos[1]+txtIMG.shape[1]] = txtIMG
+                y += itemList_h
+
+                cv2.putText(bg, str(id)+")", (itemList_pos[1]-30,y-15), cv2.FONT_HERSHEY_COMPLEX, 0.55, (0,0,0), 2)
+                if(item[3]>1):
+                    cv2.putText(bg, "x "+str(item[3]), (itemList_pos[1]+130,y-15), cv2.FONT_HERSHEY_COMPLEX, 0.55, (0,0,0), 1)
+
+                price = item[2]*item[3]
+                cv2.putText(bg, "$"+str(price), (itemList_pos[1]+180,y-15), cv2.FONT_HERSHEY_COMPLEX, 0.55, (255,0,0), 1)
+
+                price_total += price
 
         return bg
         #cv2.imshow(self.win, bg)

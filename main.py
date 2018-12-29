@@ -1,3 +1,6 @@
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from yoloOpencv import opencvYOLO
 import cv2
 import imutils
@@ -6,10 +9,11 @@ from libPOS import desktop
 
 yolo = opencvYOLO(modeltype="yolov3-tiny", \
     objnames="cfg.breads_v3.tiny/obj.names", \
-    weights="cfg.breads_v3.tiny/weights/yolov3-tiny_200000.weights",\
+    weights="cfg.breads_v3.tiny/weights/yolov3-tiny_500000.weights",\
     cfg="cfg.breads_v3.tiny/yolov3-tiny.cfg")
 
-
+labels = {  "a1":["杯子蛋糕", 15], "a2":["丹麥起司",55], "a3":["十勝紅豆",42], "a4":["花生夾心", 26], \
+            "a5":["夾心鬆餅", 42], "a6":["風味布雪", 38] }
 idle_checkout = (6, 10)
 media = "bread_test.mp4"
 video_out = "output.avi"
@@ -23,6 +27,27 @@ dt.emptyBG = None
 last_movetime = time.time()  #objects > 0
 YOLO = False  # YOLO detect in this loop?
 txtStatus = ""
+
+def group(items):
+    """
+    groups a sorted list of integers into sublists based on the integer key
+    """
+    if len(items) == 0:
+        return []
+
+    grouped_items = []
+    prev_item, rest_items = items[0], items[1:]
+
+    subgroup = [prev_item]
+    for item in rest_items:
+        if item != prev_item:
+            grouped_items.append(subgroup)
+            subgroup = []
+        subgroup.append(item)
+        prev_item = item
+
+    grouped_items.append(subgroup)
+    return grouped_items
 
 if __name__ == "__main__":
 
@@ -83,14 +108,21 @@ if __name__ == "__main__":
             print("YOLO start...")
             YOLO = False
             yolo.getObject(frame, labelWant="", drawBox=True, bold=1, textsize=0.6, bcolor=(0,0,255), tcolor=(255,255,255))
-            print ("Object counts:", yolo.objCounts)
             #yolo.listLabels()
-            print("classIds:{}, confidences:{}, labelName:{}, bbox:{}".\
-                format(len(yolo.classIds), len(yolo.scores), len(yolo.labelNames), len(yolo.bbox)) )
+            #print("classIds:{}, confidences:{}, labelName:{}, bbox:{}".\
+            #    format(len(yolo.classIds), len(yolo.scores), len(yolo.labelNames), len(yolo.bbox)) )
+            types = group(yolo.labelNames)
+            print("Labels:", types)
+            shoplist = []
+            for items in types:
+                shoplist.append([items[0], labels[items[0]][0], labels[items[0]][1], len(items)])
 
             txtStatus = "checkout"
+            print(shoplist)
 
-            imgDisplay = dt.display(frame, txtStatus)
+            imgDisplay = dt.display(frame, txtStatus, shoplist)
+            cv2.imshow("SunplusIT", imgDisplay)
+            cv2.waitKey(1)
             cv2.imshow("SunplusIT", imgDisplay)
             cv2.waitKey(1)
             time.sleep(8)
