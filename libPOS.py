@@ -6,15 +6,15 @@ from skimage.measure import compare_ssim
 
 class desktop:
     def __init__(self, bg_path, click_bg_path):
-        self.bg = cv2.imread(bg_path)
+        self.bg = bg_path
         self.click_bg = cv2.imread(click_bg_path)
 
     def display(self, camImg, txtStatus=None, itemList=None):
         itemList_pos = (40, 550)
         itemList_h = 40
+        bg = cv2.imread(self.bg)
 
         resized = cv2.resize(camImg, (480, 360))
-        bg = self.bg
         print(bg.shape, resized.shape)
         bg[95:95+resized.shape[0],25:25+resized.shape[1]] = resized
 
@@ -39,6 +39,9 @@ class desktop:
 
                 price_total += price
 
+            total = cv2.imread("images/total.jpg")
+            bg[410:410+total.shape[0], 515:515+total.shape[1]] = total
+            cv2.putText(bg, "$"+str(price_total), (660,395+total.shape[0]), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0), 2)
         return bg
         #cv2.imshow(self.win, bg)
         #cv2.waitKey(1)

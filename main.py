@@ -19,8 +19,8 @@ media = "bread_test.mp4"
 video_out = "output.avi"
 dt = desktop("images/bg.jpg", "images/bgClick.jpg")
 
-#cv2.namedWindow("SunplusIT", cv2.WND_PROP_FULLSCREEN)        # Create a named window
-#cv2.setWindowProperty("SunplusIT", cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
+cv2.namedWindow("SunplusIT", cv2.WND_PROP_FULLSCREEN)        # Create a named window
+cv2.setWindowProperty("SunplusIT", cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
 
 start_time = time.time()
 dt.emptyBG = None
@@ -35,6 +35,7 @@ def group(items):
     if len(items) == 0:
         return []
 
+    items.sort()
     grouped_items = []
     prev_item, rest_items = items[0], items[1:]
 
@@ -111,21 +112,22 @@ if __name__ == "__main__":
             #yolo.listLabels()
             #print("classIds:{}, confidences:{}, labelName:{}, bbox:{}".\
             #    format(len(yolo.classIds), len(yolo.scores), len(yolo.labelNames), len(yolo.bbox)) )
-            types = group(yolo.labelNames)
-            print("Labels:", types)
-            shoplist = []
-            for items in types:
-                shoplist.append([items[0], labels[items[0]][0], labels[items[0]][1], len(items)])
+            if(len(yolo.labelNames)>0):
+                types = group(yolo.labelNames)
+                print("Labels:", types)
+                shoplist = []
+                for items in types:
+                    shoplist.append([items[0], labels[items[0]][0], labels[items[0]][1], len(items)])
 
-            txtStatus = "checkout"
-            print(shoplist)
+                txtStatus = "checkout"
+                print(shoplist)
 
-            imgDisplay = dt.display(frame, txtStatus, shoplist)
-            cv2.imshow("SunplusIT", imgDisplay)
-            cv2.waitKey(1)
-            cv2.imshow("SunplusIT", imgDisplay)
-            cv2.waitKey(1)
-            time.sleep(8)
+                imgDisplay = dt.display(frame, txtStatus, shoplist)
+                cv2.imshow("SunplusIT", imgDisplay)
+                cv2.waitKey(1)
+                cv2.imshow("SunplusIT", imgDisplay)
+                cv2.waitKey(1)
+                time.sleep(8)
 
         #dt.emptyBG = frame.copy()
         #dt.emptyBG_time = time.time()
