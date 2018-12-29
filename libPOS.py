@@ -30,7 +30,7 @@ class desktop:
                 bg[y:y+txtIMG.shape[0], itemList_pos[1]:itemList_pos[1]+txtIMG.shape[1]] = txtIMG
                 y += itemList_h
 
-                cv2.putText(bg, str(id)+")", (itemList_pos[1]-30,y-15), cv2.FONT_HERSHEY_COMPLEX, 0.55, (0,0,0), 2)
+                cv2.putText(bg, str(id+1)+")", (itemList_pos[1]-30,y-15), cv2.FONT_HERSHEY_COMPLEX, 0.55, (0,0,0), 2)
                 if(item[3]>1):
                     cv2.putText(bg, "x "+str(item[3]), (itemList_pos[1]+130,y-15), cv2.FONT_HERSHEY_COMPLEX, 0.55, (0,0,0), 1)
 
