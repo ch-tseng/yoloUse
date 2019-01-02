@@ -124,10 +124,10 @@ if __name__ == "__main__":
 
                 imgDisplay = dt.display(frame, txtStatus, shoplist)
                 cv2.imshow("SunplusIT", imgDisplay)
-                cv2.waitKey(1)
-                cv2.imshow("SunplusIT", imgDisplay)
-                cv2.waitKey(1)
-                time.sleep(8)
+                cv2.waitKey(0)
+                #cv2.imshow("SunplusIT", imgDisplay)
+                #cv2.waitKey(1)
+                #time.sleep(0)
 
         #dt.emptyBG = frame.copy()
         #dt.emptyBG_time = time.time()
@@ -135,7 +135,7 @@ if __name__ == "__main__":
         #out.write(frame)
         
 
-        k = cv2.waitKey(1)
+        k = cv2.waitKey(0)
         if k == 0xFF & ord("q"):
             out.release()
             break

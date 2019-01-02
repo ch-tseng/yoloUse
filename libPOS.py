@@ -1,4 +1,5 @@
 import time
+from PIL import ImageFont, ImageDraw, Image
 import imutils
 import cv2
 import numpy as np
@@ -10,7 +11,7 @@ class desktop:
         self.click_bg = cv2.imread(click_bg_path)
 
     def display(self, camImg, txtStatus=None, itemList=None):
-        itemList_pos = (40, 550)
+        itemList_pos = (30, 550)
         itemList_h = 40
         bg = cv2.imread(self.bg)
 
@@ -25,17 +26,21 @@ class desktop:
         if(itemList is not None):
             y = itemList_pos[0]
             for id, item in enumerate(itemList):
+                '''
                 txtIMG = cv2.imread("images/products/" + item[0] + ".jpg")
 
                 bg[y:y+txtIMG.shape[0], itemList_pos[1]:itemList_pos[1]+txtIMG.shape[1]] = txtIMG
                 y += itemList_h
+                '''
 
-                cv2.putText(bg, str(id+1)+")", (itemList_pos[1]-30,y-15), cv2.FONT_HERSHEY_COMPLEX, 0.55, (0,0,0), 2)
+                bg = self.printText(item[1], bg=bg, color=(0,0,0,0), size=0.7, pos=(itemList_pos[1],y), type="Chinese")
+
+                cv2.putText(bg, str(id+1)+")", (itemList_pos[1]-30,y+17), cv2.FONT_HERSHEY_COMPLEX, 0.6, (0,0,0), 2)
                 if(item[3]>1):
-                    cv2.putText(bg, "x "+str(item[3]), (itemList_pos[1]+130,y-15), cv2.FONT_HERSHEY_COMPLEX, 0.55, (0,0,0), 1)
+                    cv2.putText(bg, "x "+str(item[3]), (itemList_pos[1]+130,y+17), cv2.FONT_HERSHEY_COMPLEX, 0.6, (0,0,0), 2)
 
                 price = item[2]*item[3]
-                cv2.putText(bg, "$"+str(price), (itemList_pos[1]+180,y-15), cv2.FONT_HERSHEY_COMPLEX, 0.55, (255,0,0), 1)
+                cv2.putText(bg, "$"+str(price), (itemList_pos[1]+180,y+17), cv2.FONT_HERSHEY_COMPLEX, 0.6, (255,0,0), 1)
 
                 price_total += price
 
@@ -117,20 +122,21 @@ class desktop:
 
         return counts
 
-def printText(self, txt, bg, color=(0,255,0,0), size=0.7, pos=(0,0), type="Chinese"):
-    (b,g,r,a) = color
+    def printText(self, txt, bg, color=(0,255,0,0), size=0.7, pos=(0,0), type="Chinese"):
+        (b,g,r,a) = color
 
-    if(type=="English"):
-        ## Use cv2.FONT_HERSHEY_XXX to write English.
-        cv2.putText(bg,  txt, pos, cv2.FONT_HERSHEY_SIMPLEX, size,  (b,g,r), 2, cv2.LINE_AA)
+        if(type=="English"):
+            ## Use cv2.FONT_HERSHEY_XXX to write English.
+            cv2.putText(bg,  txt, pos, cv2.FONT_HERSHEY_SIMPLEX, size,  (b,g,r), 2, cv2.LINE_AA)
 
-    else:
-        ## Use simsum.ttc to write Chinese.
-        fontpath = "./wt009.ttf"
-        font = ImageFont.truetype(fontpath, size*50)
-        img_pil = Image.fromarray(bg)
-        draw = ImageDraw.Draw(img_pil)
-        draw.text(pos,  txt, font = font, fill = (b, g, r, a))
-        bg = np.array(img_pil)
+        else:
+            ## Use simsum.ttf to write Chinese.
+            fontpath = "fonts/wt009.ttf"
+            print("TEST", txt)
+            font = ImageFont.truetype(fontpath, int(size*10*4))
+            img_pil = Image.fromarray(bg)
+            draw = ImageDraw.Draw(img_pil)
+            draw.text(pos,  txt, font = font, fill = (b, g, r, a))
+            bg = np.array(img_pil)
 
-    return bg
+        return bg
