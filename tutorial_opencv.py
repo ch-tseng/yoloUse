@@ -73,6 +73,7 @@ if __name__ == "__main__":
             print("classIds:{}, confidences:{}, labelName:{}, bbox:{}".\
                 format(len(yolo.classIds), len(yolo.scores), len(yolo.labelNames), len(yolo.bbox)) )
             cv2.imshow("Frame", imutils.resize(frame, width=850))
+            frameID += 1
 
             if(write_video is True):
                 out.write(frame)
